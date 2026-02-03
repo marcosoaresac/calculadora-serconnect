@@ -150,31 +150,41 @@
         mediaParcial = av1 + av2;
         
         const status = document.getElementById('statusFinal');
+        const areaAF = document.getElementById('areaAF');
         status.style.display = 'block';
-        status.innerHTML = `Média Final: ${mediaParcial.toFixed(2)}`;
-
+        
+        // 1. Caso: Aprovado Direto
         if (mediaParcial >= 7.0) {
             status.className = 'alert aprovado';
-            status.innerHTML += "<br>APROVADO! 🎉";
-            document.getElementById('areaAF').style.display = 'none';
-        } else {
+            status.innerHTML = `Média Final: ${mediaParcial.toFixed(2)} <br>APROVADO! 🎉`;
+            areaAF.style.display = 'none';
+        } 
+        // 2. Caso: Reprovação Direta (Média abaixo de 4.0)
+        else if (mediaParcial < 4.0) {
             status.className = 'alert reprovado';
-            status.innerHTML += "<br>VOCÊ ESTÁ EM RECUPERAÇÃO (AF)";
-            document.getElementById('areaAF').style.display = 'block';
+            status.innerHTML = `Média Final: ${mediaParcial.toFixed(2)} <br>REPROVADO DIRETO (Média inferior a 4.0)`;
+            areaAF.style.display = 'none'; // Esconde o campo da Final
+        }
+        // 3. Caso: Direito à Final
+        else {
+            status.className = 'alert reprovado'; // Mantém vermelho para alerta de recuperação
+            status.style.background = '#fff3cd'; // Cor amarela/alerta
+            status.style.color = '#856404';
+            status.style.border = '1px solid #ffeeba';
+            status.innerHTML = `Média Final: ${mediaParcial.toFixed(2)} <br>VOCÊ ESTÁ EM RECUPERAÇÃO (AF)`;
+            areaAF.style.display = 'block'; // Mostra o campo da Final
         }
     }
 
     function calcAF() {
         const notaAF = getVal('notaAF');
-        // Regra comum: (Média anterior + AF) / 2. Passa com 5.0.
-        // Se a sua faculdade tiver outra regra, mude a linha abaixo:
         const mediaAposAF = (mediaParcial + notaAF) / 2;
         
         const resAF = document.getElementById('resAF');
         if (mediaAposAF >= 5.0) {
             resAF.innerHTML = `Média Pós-Final: ${mediaAposAF.toFixed(2)} <br> <strong style="color:green">APROVADO NA FINAL!</strong>`;
         } else {
-            resAF.innerHTML = `Média Pós-Final: ${mediaAposAF.toFixed(2)} <br> <strong style="color:red">REPROVADO</strong>`;
+            resAF.innerHTML = `Média Pós-Final: ${mediaAposAF.toFixed(2)} <br> <strong style="color:red">REPROVADO NA FINAL</strong>`;
         }
     }
 </script>
